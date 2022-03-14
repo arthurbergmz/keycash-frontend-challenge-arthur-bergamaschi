@@ -1,19 +1,37 @@
 <template>
-  <buildings-filters></buildings-filters>
-  <Wrapper position="relative">
-    <ul class="buildings" style="margin-top: 7rem;">
-      <li v-for="building in buildings" :key="building.id">
-        <building-showcase :building="building"></building-showcase>
-      </li>
-    </ul>
+  <buildings-filters @apply-filters="applyFilters($event)"></buildings-filters>
+  <Wrapper position="relative" class="wrapper">
+    <div class="content">
+      <p v-show="state.fetching">
+        Carregando...
+      </p>
+      <p v-show="!state.fetching && state.buildings.length === 0">
+        Nenhum resultado encontrado.
+      </p>
+      <ul class="buildings" v-show="!state.fetching">
+        <li v-for="building in state.buildings" :key="building.id">
+          <router-link :to="toRouterLink(building)" class="building-link">
+            <building-showcase :building="building" details></building-showcase>
+          </router-link>
+        </li>
+      </ul>
+    </div>
   </Wrapper>
 </template>
 
 <style scoped lang="scss">
+.content {
+  margin-top: 7rem;
+}
+
 .buildings {
   list-style: none;
   padding: 0;
-  margin: 1rem 0;
+}
+
+.building-link {
+  display: block;
+  border-radius: 2rem;
 }
 </style>
 
@@ -22,24 +40,51 @@ import Wrapper from '../components/Wrapper.vue'
 import BuildingShowcase from '../components/BuildingShowcase.vue'
 import BuildingsFilters from '../components/BuildingsFilters.vue'
 import { onMounted, reactive } from 'vue'
-import { BuildingsResponse, get as getBuildings } from '../api/buildings'
+import { BuildingsResponse, get as getBuildings, getAll as getAllBuildings } from '../api/buildings'
 import { useWarning } from '../functions/useWarning'
 import { Building } from '../interfaces/building'
 
-const buildings = reactive<BuildingsResponse>([])
-const filters = {}
+type State = {
+  fetching: boolean,
+  buildings: Building[]
+}
 
-let filtering: ((building: Building) => boolean)[] = []
+const state = reactive<State>({
+  fetching: true,
+  buildings: []
+})
 
-onMounted(async () => {
-  const response = await getBuildings((building) => filtering.length > 0 ? filtering.every((f) => f(building)) : true)
+const toRouterLink = (building: Building) => `/${building.id}`
+
+const setBuildings = (...newBuildings: Building[]) => {
+  console.log('setting buildings...', newBuildings)
+  state.buildings = [...newBuildings]
+}
+
+const applyFilters = async (filtersChain: ((building: Building) => (value: string) => boolean)[]) => {
+  state.fetching = true
+
+  const response = await getBuildings((b) => filtersChain.every(f => f(b)))
 
   if (response.error) {
-    useWarning(response.error)
-  } else {
-    console.log({ response })
-
-    buildings.push(...response.data as BuildingsResponse)
+    return void useWarning(response.error)
   }
+
+  setBuildings(...(response.data || []))
+
+  state.fetching = false
+}
+
+onMounted(async () => {
+  state.fetching = true
+  const response = await getAllBuildings()
+
+  if (response.error) {
+    return void useWarning(response.error)
+  }
+
+  setBuildings(...(response.data || []))
+
+  state.fetching = false
 })
 </script>

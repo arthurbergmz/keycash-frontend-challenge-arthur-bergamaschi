@@ -22,7 +22,7 @@ export async function getAvailable () {
 export async function get (filterFn: (building: Building) => boolean) {
   const response = await getAvailable()
 
-  if (!response.data) {
+  if (!response.data || !filterFn) {
     return response
   }
 
