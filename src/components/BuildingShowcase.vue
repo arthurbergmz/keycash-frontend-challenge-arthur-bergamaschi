@@ -62,6 +62,7 @@ img {
   padding: 0.25rem 0.5rem;
   border-radius: 2rem;
   cursor: pointer;
+  backdrop-filter: blur(5px);
 
   &.liked {
     background-color: rgba(241, 68, 68, 0.2);

@@ -33,7 +33,8 @@
 }
 
 .filters-wrapper {
-  background-color: #f7f7f7;
+  background-color: rgb(247, 247, 247, 0.88);
+  backdrop-filter: blur(10px);
   border-radius: 2rem;
   padding: 1.25rem 2rem;
 }

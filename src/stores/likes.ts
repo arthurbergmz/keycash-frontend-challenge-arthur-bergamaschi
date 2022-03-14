@@ -14,6 +14,8 @@ type LikeStore = {
 export const createLikeStore = (): LikeStore => {
   const state = reactive<State>({ likedBuildingsIds: [] })
 
+  // TODO: persist like store
+
   const like = (building: Building) => {
     if (state.likedBuildingsIds.indexOf(building.id) === -1) {
       state.likedBuildingsIds.push(building.id)
