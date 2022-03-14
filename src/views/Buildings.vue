@@ -8,15 +8,17 @@
       <p v-show="!state.fetching && state.buildings.length === 0">
         Nenhum resultado encontrado.
       </p>
-      <ul class="buildings" v-show="!state.fetching">
-        <li v-for="building in currentPageData" :key="building.id">
-          <router-link :to="toRouterLink(building)" class="building-link">
-            <building-showcase :building="building" details></building-showcase>
-          </router-link>
-        </li>
-      </ul>
-      <div class="pagination-wrapper">
-        <Pagination :current-page="currentPage" :pages-amount="pagesAmount" @select-page="setPage($event)" @select-limit="setLimit($event)" />
+      <div v-show="!state.fetching && state.buildings.length > 0">
+        <ul class="buildings">
+          <li v-for="building in currentPageData" :key="building.id">
+            <router-link :to="toRouterLink(building)" class="building-link">
+              <building-showcase :building="building" details></building-showcase>
+            </router-link>
+          </li>
+        </ul>
+        <div class="pagination-wrapper">
+          <Pagination :current-page="currentPage" :pages-amount="pagesAmount" @select-page="setPage($event)" @select-limit="setLimit($event)" />
+        </div>
       </div>
     </div>
   </Wrapper>

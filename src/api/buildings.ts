@@ -10,19 +10,20 @@ export async function getAll () {
 export async function getAvailable () {
   const response = await api.get<BuildingsResponse>('http://5e148887bce1d10014baea80.mockapi.io/keycash/challenge')
 
-  if (!response.data) {
+  if (!response.data || response.data.length === 0) {
     return response
   }
 
   const filteredData = response.data.filter(d => d.publish && d.address)
+  const orderedData = filteredData.sort((a, b) => b.price !== a.price ? (b.price > a.price ? 1 : -1) : 0)
 
-  return { ...response, data: filteredData }
+  return { ...response, data: orderedData }
 }
 
 export async function get (filterFn: (building: Building) => boolean) {
   const response = await getAvailable()
 
-  if (!response.data || !filterFn) {
+  if (!response.data || response.data.length === 0 || !filterFn) {
     return response
   }
 
