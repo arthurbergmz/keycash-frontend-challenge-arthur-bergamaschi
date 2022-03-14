@@ -112,7 +112,7 @@ import Input from './Input.vue';
 
 const emit = defineEmits(['applyFilters'])
 
-const isOpen = ref(true)
+const isOpen = ref(false)
 
 const toggle = () => void (isOpen.value = !isOpen.value)
 

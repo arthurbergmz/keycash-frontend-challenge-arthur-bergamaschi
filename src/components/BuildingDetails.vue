@@ -18,7 +18,7 @@
       <building-properties :properties="properties" class="properties"></building-properties>
     </div>
     <div class="contact">
-      <button>Contatar</button>
+      <button>Entrar em contato</button>
     </div>
     <div class="description">
       <p>
@@ -34,7 +34,11 @@
     <div class="map">
       <h3>Localização</h3>
 
-      <div class="map-wrapper">
+      <p v-show="!googleApiKey">
+        Não foi possível carregar o mapa.
+      </p>
+
+      <div class="map-wrapper" v-show="googleApiKey">
         <GoogleMap
           :api-key="googleApiKey"
           :center="position"
@@ -181,7 +185,7 @@ const position = computed(() => ({
   lng: building.address?.geolocation?.lng
 }))
 
-const googleApiKey = ref('AIzaSyCpuUXZ0IhtwF8vfE5AklX5ZdXe42scqqw')
+const googleApiKey = ref('')
 const toList = { name: Views.Buildings }
 
 const modules = [
@@ -189,4 +193,11 @@ const modules = [
   Pagination,
   A11y
 ]
+
+// TODO: create file in /functions to get google api key
+if (import.meta?.env?.VITE_GOOGLE_API_KEY) {
+  googleApiKey.value = import.meta.env.VITE_GOOGLE_API_KEY as string
+} else {
+  console.warn('Google API key not found')
+}
 </script>

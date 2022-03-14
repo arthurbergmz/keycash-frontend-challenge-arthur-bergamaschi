@@ -40,7 +40,7 @@ import Wrapper from '../components/Wrapper.vue'
 import BuildingShowcase from '../components/BuildingShowcase.vue'
 import BuildingsFilters from '../components/BuildingsFilters.vue'
 import { onMounted, reactive } from 'vue'
-import { BuildingsResponse, get as getBuildings, getAll as getAllBuildings } from '../api/buildings'
+import { BuildingsResponse, get as getBuildings, getAvailable as getAvailableBuildings } from '../api/buildings'
 import { useWarning } from '../functions/useWarning'
 import { Building } from '../interfaces/building'
 
@@ -77,7 +77,7 @@ const applyFilters = async (filtersChain: ((building: Building) => (value: strin
 
 onMounted(async () => {
   state.fetching = true
-  const response = await getAllBuildings()
+  const response = await getAvailableBuildings()
 
   if (response.error) {
     return void useWarning(response.error)
