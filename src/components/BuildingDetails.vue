@@ -13,6 +13,7 @@
   <Wrapper>
     <div class="info">
       <router-link :to="toList" class="back-button">🔙</router-link>
+      <button class="like-button" :class="{ liked: isLiked }" @click="toggleLike()">{{ likeEmoji }}</button>
       <h2 class="address">{{ firstAddress }}</h2>
       <h3 class="price">{{ price }}</h3>
       <building-properties :properties="properties" class="properties"></building-properties>
@@ -52,14 +53,29 @@
 </template>
 
 <style scoped lang="scss">
-.back-button {
+.back-button,
+.like-button {
   font-size: 1.25rem;
-  background-color: rgba(85, 68, 241, 0.1);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.back-button {
+  background-color: rgba(85, 68, 241, 0.1);
+  
 
   &:hover {
     background-color: rgba(85, 68, 241, 0.2);
+  }
+}
+
+.like-button {
+  background-color: rgba(233, 233, 233, 0.3);
+  margin-left: 1rem;
+
+  &.liked {
+    background-color: rgba(241, 68, 68, 0.2);
   }
 }
 
@@ -162,12 +178,14 @@ import { Building } from '../interfaces/building'
 import { useCurrency } from '../functions/useCurrency'
 import { GoogleMap, Marker } from 'vue3-google-map'
 import Views from '../views'
+import { useLikeStore } from '../stores/likes';
 
 type Props = {
   building: Building
 }
 
 const currency = useCurrency('pt-br')
+const likeStore = useLikeStore()
 
 const { building } = defineProps<Props>()
 
@@ -184,6 +202,10 @@ const position = computed(() => ({
   lat: building.address?.geolocation?.lat,
   lng: building.address?.geolocation?.lng
 }))
+
+const isLiked = computed(() => likeStore?.isLiked(building) ?? false)
+const likeEmoji = computed(() => isLiked.value ? '❤️' : '🤍')
+const toggleLike = () => isLiked.value ? likeStore?.unlike(building) : likeStore?.like(building)
 
 const googleApiKey = ref('')
 const toList = { name: Views.Buildings }

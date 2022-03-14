@@ -11,6 +11,7 @@
         </SwiperSlide>
       </Swiper>
     </div>
+    <button class="like-button" :class="{ liked: isLiked }" @click.prevent="toggleLike()">{{ likeEmoji }}</button>
     <div class="info">
       <h2 class="address">{{ firstAddress }}</h2>
       <h3 class="price">{{ price }}</h3>
@@ -21,6 +22,7 @@
 
 <style scoped lang="scss">
 .wrapper {
+  position: relative;
   border-radius: 2rem;
   overflow: hidden;
   margin: 2.5rem 0;
@@ -48,6 +50,22 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.like-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  background-color: rgba(233, 233, 233, 0.3);
+  font-size: 1.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2rem;
+  cursor: pointer;
+
+  &.liked {
+    background-color: rgba(241, 68, 68, 0.2);
+  }
 }
 
 .info {
@@ -80,12 +98,14 @@ import BuildingProperties from './BuildingProperties.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Building } from '../interfaces/building'
 import { useCurrency } from '../functions/useCurrency'
+import { useLikeStore } from '../stores/likes';
 
 type Props = {
   building: Building
 }
 
 const currency = useCurrency('pt-br')
+const likeStore = useLikeStore()
 
 const { building } = defineProps<Props>()
 
@@ -98,6 +118,10 @@ const properties = computed(() => [
   { name: 'Banheiros', value: building.bathrooms },
   { name: 'Vagas', value: building.parkingSpaces }
 ])
+
+const isLiked = computed(() => likeStore?.isLiked(building) ?? false)
+const likeEmoji = computed(() => isLiked.value ? '❤️' : '🤍')
+const toggleLike = () => isLiked.value ? likeStore?.unlike(building) : likeStore?.like(building)
 
 const modules = [
   Navigation,
