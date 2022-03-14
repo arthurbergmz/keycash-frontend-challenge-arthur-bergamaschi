@@ -1,6 +1,7 @@
 enum Views {
   Buildings = 'Buildings',
-  BuildingDetails = 'BuildingDetails'
+  BuildingDetails = 'BuildingDetails',
+  NotFound = 'NotFound'
 }
 
 export default Views

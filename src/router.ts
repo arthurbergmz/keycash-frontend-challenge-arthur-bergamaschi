@@ -11,7 +11,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     useRouteComponent('/', Views.Buildings),
-    useRouteComponent('/:buildingId', Views.BuildingDetails)
+    useRouteComponent('/:buildingId', Views.BuildingDetails),
+    useRouteComponent('/:pathMatch(.*)*', Views.NotFound)
   ]
 })
 
