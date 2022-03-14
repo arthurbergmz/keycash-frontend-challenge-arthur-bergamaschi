@@ -198,10 +198,10 @@ const properties = computed(() => [
   { name: 'Banheiros', value: building.bathrooms },
   { name: 'Vagas', value: building.parkingSpaces }
 ])
-const position = computed(() => ({
-  lat: building.address?.geolocation?.lat,
-  lng: building.address?.geolocation?.lng
-}))
+const position = computed(() => new google.maps.LatLng(
+  building.address?.geolocation?.lat ?? 0,
+  building.address?.geolocation?.lng ?? 0
+))
 
 const isLiked = computed(() => likeStore?.isLiked(building) ?? false)
 const likeEmoji = computed(() => isLiked.value ? '❤️' : '🤍')

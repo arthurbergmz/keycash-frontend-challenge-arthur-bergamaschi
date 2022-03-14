@@ -1,7 +1,7 @@
 <template>
   <label>
     <b>{{ label }}</b>
-    <input :name="name" :placeholder="placeholder" :value="modelValue" @input="$emit('update:modelValue', $event!.target!.value)" />
+    <input :name="name" :placeholder="placeholder" :value="modelValue" @input="emitValue($event)" />
   </label>
 </template>
 
@@ -37,5 +37,7 @@ type Props = {
 // TODO: add filter types, so the user can only input numbers in bathrooms amount, for example
 
 defineProps<Props>()
-defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
+
+const emitValue = (event: Event) => emit('update:modelValue', (event?.target as HTMLInputElement)?.value)
 </script>
